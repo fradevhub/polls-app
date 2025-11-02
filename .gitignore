@@ -1,0 +1,45 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+*.icloud
+
+# Node / build
+node_modules/
+dist/
+build/
+.cache/
+tmp/
+temp/
+coverage/
+.vite/
+.pnpm-store/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+
+# TypeScript
+*.tsbuildinfo
+
+# OTHERS
+MATERIALE/
+OLD/
+TEST/
+public/assets/
