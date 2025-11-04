@@ -3,7 +3,7 @@
 // Models reflect the API contract v1 and specs.
 // - DB: PostgreSQL
 // - Auth: JWT (users are seeded, no signup endpoint)
-// - Rating: integer 1..5
+// - Rating: integer 1-5
 // - Invariants from API: unique (userId, pollId); vote allowed only if poll is OPEN
 // ---------------------------------------------
 
@@ -41,47 +41,52 @@ enum PollStatus {
 // Models
 // ---------------------------------------------
 
-// Application user seeded for the test/MVP.
-// Passwords are stored as a secure hash (e.g., bcrypt/argon2).
+// Application user seeded for the MVP/test.
+// Passwords are stored as a secure hash (bcrypt).
+// IDs as string for flexibility; client defaults to cuid()
+
 model User {
-  // Primary key (string IDs let us stay flexible; client defaults to cuid()).
-  id           String   @id @default(cuid())
+  // Primary key
+  id            String        @id @default(cuid())
 
   // Unique email used for login.
-  email        String   @unique
+  email         String        @unique
 
-  // Password hash (bcrypt or argon2). Never expose in API responses.
-  passwordHash String
+  // Password hash (bcrypt). Never expose in API responses.
+  passwordHash  String
 
   // Application role: 'user' or 'admin'.
-  role         Role     @default(user)
+  role          Role          @default(user)
 
   // Audit fields
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   // Relations
-  polls        Poll[]   @relation("UserPolls") // polls created by this user
-  votes        Vote[]   // votes cast by this user
+  polls         Poll[]   @relation("UserPolls") // polls created by this user
+  votes         Vote[]   // votes cast by this user
 }
 
-// A poll that users can rate (1..5).
+// A poll that users can rate (1-5).
 model Poll {
-  id         String      @id @default(cuid())
+  id            String        @id @default(cuid())
 
-  // Human-readable title shown in listings and details.
-  title      String
+  // Title shown in listings and details.
+  title         String
+
+  // Description shown in details.
+  description   String?
 
   // OPEN -> voting allowed; CLOSED -> voting blocked.
-  status     PollStatus  @default(OPEN)
+  status        PollStatus    @default(OPEN)
 
   // Creator (must be an admin according to app-level rules).
-  createdBy  String
-  createdAt  DateTime    @default(now())
+  createdBy     String
+  createdAt     DateTime      @default(now())
 
   // Relations
-  author     User        @relation("UserPolls", fields: [createdBy], references: [id], onDelete: Cascade)
-  votes      Vote[]
+  author        User          @relation("UserPolls", fields: [createdBy], references: [id], onDelete: Cascade)
+  votes         Vote[]
 
   // Helpful indexes for lookups and ordering
   @@index([status])
@@ -90,22 +95,23 @@ model Poll {
 
 // A user's rating on a given poll (1-5).
 model Vote {
-  id        String   @id @default(cuid())
+  id            String        @id @default(cuid())
 
   // FK to Poll
-  pollId    String
+  pollId        String
+
   // FK to User
-  userId    String
+  userId        String
 
   // Rating in [1-5]. The API contract enforces integer range.
-  rating    Int
+  rating        Int
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relations
-  poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  poll     Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Each user can vote a poll at most once (upsert on POST /polls/:id/vote).
   @@unique([userId, pollId])
