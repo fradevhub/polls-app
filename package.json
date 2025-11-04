@@ -1,0 +1,26 @@
+{
+  "name": "polls-app",
+  "private": true,
+  "packageManager": "pnpm@10.20.0",
+  "engines": { "node": "20.x" },
+  "scripts": {
+    "db:start": "docker compose up -d db",
+    "db:stop": "docker compose stop db",
+    "db:psql": "docker exec -it polls-db psql -U polls -d polls",
+    "db:logs": "docker compose logs -f db",
+    "db:nuke": "docker compose down -v",
+    "db:dump": "bash -lc 'docker exec -i polls-db pg_dump -U polls -d polls > ./.data/dump.sql'",
+    "db:restore": "bash -lc 'cat ./.data/dump.sql | docker exec -i polls-db psql -U polls -d polls'",
+    "db:test:psql": "docker exec -it polls-db-test psql -U polls -d polls_test",
+    "db:test:start": "docker compose up -d db_test",
+    "db:test:stop": "docker compose stop db_test",
+    "db:test:logs": "docker compose logs -f db_test",
+    "db:status": "docker compose ps",
+    "be:migrate": "pnpm -C backend prisma migrate dev",
+    "be:deploy": "pnpm -C backend prisma migrate deploy",
+    "be:seed": "pnpm -C backend prisma db seed",
+    "be:studio": "pnpm -C backend prisma studio",
+    "be:dev": "pnpm -C backend dev",
+    "fe:dev": "pnpm -C frontend dev"
+  }
+}

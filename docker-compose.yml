@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16
+    container_name: polls-db
+    environment:
+      POSTGRES_USER: polls
+      POSTGRES_PASSWORD: polls
+      POSTGRES_DB: polls
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # DB separato per i test (Supertest)
+  db_test:
+    image: postgres:16
+    container_name: polls-db-test
+    environment:
+      POSTGRES_USER: polls
+      POSTGRES_PASSWORD: polls
+      POSTGRES_DB: polls_test
+    ports:
+      - "5433:5432"
+    # No volume: da usare per test "usa e getta"
+    tmpfs:
+      - /var/lib/postgresql/data:rw,noexec,nosuid,size=128m
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
