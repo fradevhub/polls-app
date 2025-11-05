@@ -47,7 +47,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRouter);
 
 
-/* Public routes */
+/* Polls routes (auth required) */
 app.use('/api/polls', requireAuth, pollsRouter);
 
 

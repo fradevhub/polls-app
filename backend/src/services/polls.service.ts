@@ -1,6 +1,13 @@
 import { prisma } from '../db';
 import { AppError } from '../middlewares/error.middleware';
 
+// Type fo upsertVote input
+type UpsertVoteInput = {
+  pollId: string;
+  userId: string;
+  rating: number; // already validated in controller
+};
+
 /* List polls with metrics */
 // Return all polls along with aggregated metrics (avg rating, vote count).
 // Round avg to 1 decimal.
@@ -93,5 +100,55 @@ export async function getPollByIdWithMetrics(pollId: string, userId: string) {
     count,
     distribution,
     userVote: myVote?.rating ?? undefined, // omit if user never voted
+  };
+}
+
+
+/* Handle upsert vote (auth required) */
+// Returns minimal shape in compliance with API contract.
+// Rules to validate the request:
+// - poll must exist, otherwise 404 NOT_FOUND.
+// - poll must be OPEN, otherwise 403 FORBIDDEN.
+// - unique on (userId, pollId) enforced by Prisma schema (composite unique).
+export async function handleUpsertVote(input: UpsertVoteInput) {
+  const { pollId, userId, rating } = input;
+
+  // ensure poll exists and is OPEN
+  const poll = await prisma.poll.findUnique({
+    where: { id: pollId },
+    select: { status: true },
+  });
+
+  if (!poll) {
+    throw new AppError(404, 'NOT_FOUND', 'Poll not found');
+  }
+  if (poll.status !== 'OPEN') {
+    throw new AppError(403, 'FORBIDDEN', 'Poll is closed');
+  }
+
+  // insert or update
+  const vote = await prisma.vote.upsert({
+    where: {
+      userId_pollId: { userId, pollId },
+    },
+    create: {
+      userId,
+      pollId,
+      rating,
+    },
+    update: {
+      rating,
+    },
+    select: {
+      rating: true,
+      pollId: true,
+      userId: true,
+    },
+  });
+
+  return {
+    pollId: vote.pollId,
+    userId: vote.userId,
+    rating: vote.rating,
   };
 }
