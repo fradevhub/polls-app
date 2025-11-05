@@ -25,7 +25,7 @@
     "prisma:studio": "pnpm --dir backend exec dotenv -e .env -- prisma studio --schema=prisma/schema.prisma",
     "prisma:seed": "pnpm --dir backend exec dotenv -e .env -- prisma db seed",
 
-    "be:dev": "pnpm --dir backend exec dotenv -e .env -- ts-node src/index.ts",
+    "be:dev": "pnpm --dir backend exec dotenv -e .env -- tsx src/server.ts",
     "fe:dev": "pnpm --dir frontend exec vite"
   }
 }
