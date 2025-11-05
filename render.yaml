@@ -1,14 +1,14 @@
 services:
   # --- Backend API (Node + Express + Prisma) ---
   - type: web
-    runtime: node
     name: polls-api
-    nodeVersion: 20
+    runtime: node
     plan: free
     rootDir: backend
     autoDeploy: true
     healthCheckPath: /api/health
     buildCommand: |
+      corepack enable
       pnpm install --frozen-lockfile
       pnpm exec prisma generate --schema=prisma/schema.prisma
       pnpm exec prisma migrate deploy --schema=prisma/schema.prisma
@@ -23,13 +23,16 @@ services:
         fromGroup: POLLS_APP
       - key: NODE_ENV
         value: production
+      - key: RENDER_NODE_VERSION
+        value: 20
 
   # --- Frontend (React + Vite, static site) ---
   - type: web
-    runtime: static
     name: polls-frontend
+    runtime: static
     rootDir: frontend
     buildCommand: |
+      corepack enable
       pnpm install --frozen-lockfile
       pnpm run build
     staticPublishPath: dist
