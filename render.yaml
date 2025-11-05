@@ -1,8 +1,8 @@
 services:
   # --- Backend API (Node + Express + Prisma) ---
   - type: web
+    runtime: node
     name: polls-api
-    env: node
     nodeVersion: 20
     plan: free
     rootDir: backend
@@ -25,7 +25,8 @@ services:
         value: production
 
   # --- Frontend (React + Vite, static site) ---
-  - type: static_site
+  - type: web
+    runtime: static
     name: polls-frontend
     rootDir: frontend
     buildCommand: |
