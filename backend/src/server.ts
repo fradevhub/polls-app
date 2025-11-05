@@ -2,7 +2,8 @@ import 'dotenv/config'; // load environment variables from .env into process.env
 import express from 'express';
 import cors from 'cors';
 import { env, assertEnv } from './config/env';
-import { AppError, notFoundHandler, errorHandler } from './middlewares/error.middleware';
+import { notFoundHandler, errorHandler } from './middlewares/error.middleware';
+import authRouter from './modules/auth/auth.routes';
 
 // import morgan from 'morgan'; // optional HTTP request logger
 
@@ -38,7 +39,8 @@ app.get('/api/health', (_req, res) => {
 });
 
 
-/* PLACEHOLDER TO ADD API ROUTES */
+/* APP API ROUTES */
+app.use('/api/auth', authRouter);
 
 
 /* Handling 404 (Not Found) routes */
