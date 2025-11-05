@@ -1,3 +1,8 @@
+# =============================================
+# Polls App - Render Blueprint
+# Full-stack deploy (Node + React + PostgreSQL)
+# =============================================
+
 services:
   # --- Backend API (Node + Express + Prisma) ---
   - type: web
@@ -5,16 +10,22 @@ services:
     runtime: node
     plan: free
     rootDir: backend
-    autoDeploy: true
-    healthCheckPath: /api/health                  # real health endpoint
+    autoDeploy: false
+    healthCheckPath: /api/health
+
     buildCommand: |
       corepack pnpm install --frozen-lockfile
       corepack pnpm exec prisma generate --schema=prisma/schema.prisma
       corepack pnpm run build
+
     startCommand: |
-      corepack pnpm exec prisma migrate deploy --schema=prisma/schema.prisma && corepack pnpm start
+      corepack pnpm start
+
     envVars:
+      # Environment group (contains DATABASE_URL, JWT_SECRET, CORS_ORIGIN, etc.)
+      # Setup variables on Render Dashboard
       - fromGroup: POLLS_APP
+      # Optional explicit flag
       - key: NODE_ENV
         value: production
 
@@ -23,17 +34,26 @@ services:
     name: polls-frontend
     runtime: static
     rootDir: frontend
+    autoDeploy: false
+
     buildCommand: |
-      cd ..                                        # go to the root of the workspace
-      corepack pnpm install --frozen-lockfile      # use the shared lockfile
-      cd frontend                                  # return to the frontend project
-      corepack pnpm run build
+      corepack pnpm install --frozen-lockfile && corepack pnpm run build
+
     staticPublishPath: dist
+
     envVars:
+      # Environment group (includes VITE_API_BASE_URL and any shared envs)
+      # Setup variables on Render Dashboard
       - fromGroup: POLLS_APP
-      - key: NIXPACKS_PACKAGE_MANAGER
+
+      # Ensure Nixpacks always uses pnpm instead of npm
+      - key: NIXPACKS_NODE_PACKAGE_MANAGER
         value: pnpm
+      - key: NIXPACKS_NODE_INSTALL_COMMAND
+        value: corepack pnpm install --frozen-lockfile
+
+    # SPA rewrite rule for React Router
     routes:
-      - type: rewrite                              # SPA fallback for React Router
+      - type: rewrite
         source: "/*"
         destination: "/index.html"
