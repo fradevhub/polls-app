@@ -206,3 +206,36 @@ export async function handleCreatePoll(input: CreatePollInput) {
     },
   };
 }
+
+
+/* Close poll (auth required) */
+// Update status -> CLOSED and returns minimal payload.
+// Rules to validate the request:
+// - poll must exist, otherwise 404 NOT_FOUND.
+// - poll must be OPEN, otherwise 403 CONFLICT.
+export async function handleClosePoll(pollId: string) {
+  // Read current poll
+  const poll = await prisma.poll.findUnique({
+    where: { id: pollId }
+  });
+
+  if (!poll) {
+    throw new AppError(404, 'NOT_FOUND', 'Poll not found');
+  }
+
+  if (poll.status === 'CLOSED') {
+    throw new AppError(409,'CONFLICT', 'Poll already closed');
+  }
+
+  // Mark as CLOSED (irreversible for MVP/test)
+  const updated = await prisma.poll.update({
+    where: { id: pollId },
+    data: { status: 'CLOSED' }
+  });
+
+  // Return minimal response in compliance  with API contract
+  return {
+    id: updated.id,
+    status: updated.status as 'CLOSED'
+  };
+}

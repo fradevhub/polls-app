@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { createPoll, getPolls, getPollDetail, upsertVote } from '../controllers/polls.controller';
+import { getPolls, getPollDetail, upsertVote } from '../controllers/polls.controller';
+import { createPoll, closePoll } from '../controllers/polls.controller';
 
 const router = Router();
 
@@ -22,6 +23,10 @@ router.post('/:id/vote', upsertVote);
 // POST /polls
 // Creates a new poll (OPEN by default)
 router.post('/', createPoll);
+
+// POST /api/polls/:id/close
+// Close a poll (irreversible for MVP/test)
+router.post('/:id/close', closePoll);
 
 
 export default router;

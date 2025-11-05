@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { z } from 'zod';
-import { listPollsWithMetrics, getPollByIdWithMetrics, handleUpsertVote, handleCreatePoll } from '../services/polls.service';
+import { listPollsWithMetrics, getPollByIdWithMetrics, handleUpsertVote } from '../services/polls.service';
+import { handleCreatePoll, handleClosePoll } from '../services/polls.service';
 import { AppError } from '../middlewares/error.middleware';
 
 /* Get current user id */
@@ -131,10 +132,27 @@ export async function createPoll(req: Request, res: Response, next: NextFunction
     if (err instanceof z.ZodError) {
       return next(
         new AppError(400, 'VALIDATION_ERROR', 'Invalid payload', {
-          issues: err.flatten(),
+          issues: err.issues, // array of issues
         })
       );
     }
+    return next(err);
+  }
+}
+
+// Close poll (auth required)
+// Controller: POST /polls/:id/close (admin only; works only if poll is OPEN).
+export async function closePoll(req: Request, res: Response, next: NextFunction) {
+  try {
+    // Check user role
+    const role = getCurrentUserRole(req);
+    if (role !== 'admin') {
+      throw new AppError(403, 'FORBIDDEN', 'Admin only');
+    }
+    const pollId = req.params.id;
+    const result = await handleClosePoll(pollId);
+    return res.status(200).json(result);
+  } catch (err) {
     return next(err);
   }
 }
