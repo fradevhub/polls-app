@@ -6,25 +6,17 @@ services:
     plan: free
     rootDir: backend
     autoDeploy: true
-    healthCheckPath: /api/health
+    healthCheckPath: /api/health                  # real health endpoint
     buildCommand: |
-      corepack enable
-      pnpm install --frozen-lockfile
-      pnpm exec prisma generate --schema=prisma/schema.prisma
-      pnpm exec prisma migrate deploy --schema=prisma/schema.prisma
-      pnpm run build
-    startCommand: pnpm start
+      corepack pnpm install --frozen-lockfile
+      corepack pnpm exec prisma generate --schema=prisma/schema.prisma
+      corepack pnpm run build
+    startCommand: |
+      corepack pnpm exec prisma migrate deploy --schema=prisma/schema.prisma && corepack pnpm start
     envVars:
-      - key: DATABASE_URL
-        fromGroup: POLLS_APP
-      - key: JWT_SECRET
-        fromGroup: POLLS_APP
-      - key: CORS_ORIGIN
-        fromGroup: POLLS_APP
+      - fromGroup: POLLS_APP
       - key: NODE_ENV
         value: production
-      - key: RENDER_NODE_VERSION
-        value: 20
 
   # --- Frontend (React + Vite, static site) ---
   - type: web
@@ -32,10 +24,16 @@ services:
     runtime: static
     rootDir: frontend
     buildCommand: |
-      corepack enable
-      pnpm install --frozen-lockfile
-      pnpm run build
+      cd ..                                        # go to the root of the workspace
+      corepack pnpm install --frozen-lockfile      # use the shared lockfile
+      cd frontend                                  # return to the frontend project
+      corepack pnpm run build
     staticPublishPath: dist
     envVars:
-      - key: VITE_API_BASE_URL
-        fromGroup: POLLS_APP
+      - fromGroup: POLLS_APP
+      - key: NIXPACKS_PACKAGE_MANAGER
+        value: pnpm
+    routes:
+      - type: rewrite                              # SPA fallback for React Router
+        source: "/*"
+        destination: "/index.html"
