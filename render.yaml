@@ -14,16 +14,24 @@ services:
       pnpm exec prisma migrate deploy --schema=prisma/schema.prisma
       pnpm run build
     startCommand: pnpm start
-    envVarGroups:
-      - POLLS_APP
+    envVars:
+      - key: DATABASE_URL
+        fromGroup: POLLS_APP
+      - key: JWT_SECRET
+        fromGroup: POLLS_APP
+      - key: CORS_ORIGIN
+        fromGroup: POLLS_APP
+      - key: NODE_ENV
+        value: production
 
   # --- Frontend (React + Vite, static site) ---
-  - type: static
+  - type: static_site
     name: polls-frontend
     rootDir: frontend
     buildCommand: |
       pnpm install --frozen-lockfile
       pnpm run build
     staticPublishPath: dist
-    envVarGroups:
-      - POLLS_APP
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromGroup: POLLS_APP
