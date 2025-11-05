@@ -1,12 +1,22 @@
 import { prisma } from '../db';
 import { AppError } from '../middlewares/error.middleware';
 
+// Type for createPoll input
+type CreatePollInput = {
+  title: string;
+  description?: string | null;
+  createdBy: string;
+};
+
 // Type fo upsertVote input
 type UpsertVoteInput = {
   pollId: string;
   userId: string;
   rating: number; // already validated in controller
 };
+
+
+/* POLLS - USER ENDPOINT SERVICES */
 
 /* List polls with metrics */
 // Return all polls along with aggregated metrics (avg rating, vote count).
@@ -150,5 +160,49 @@ export async function handleUpsertVote(input: UpsertVoteInput) {
     pollId: vote.pollId,
     userId: vote.userId,
     rating: vote.rating,
+  };
+}
+
+
+/* POLLS - ADMIN ENDPOINT SERVICES */
+
+/* Create poll (auth required) */
+// Create a new poll as OPEN by default
+export async function handleCreatePoll(input: CreatePollInput) {
+  // Add poll in DB
+  const poll = await prisma.poll.create({
+    data: {
+      title: input.title,
+      description: input.description ?? null,
+      status: 'OPEN', // enforce OPEN by default
+      createdBy: input.createdBy
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      status: true,
+      createdAt: true,
+    },
+  });
+
+  // initialize distribution for the new poll
+  const zeroDistribution = [1, 2, 3, 4, 5].map((r) => ({
+    rating: r,
+    count: 0,
+  }));
+
+  // shape the response compliant with API Contract
+  return {
+    id: poll.id,
+    title: poll.title,
+    // omit description if null to keep payload compliant with API Contract
+    ...(poll.description ? { description: poll.description } : {}),
+    status: poll.status, // "OPEN"
+    stats: {
+      count: 0,
+      avg: 0,
+      distribution: zeroDistribution,
+    },
   };
 }
