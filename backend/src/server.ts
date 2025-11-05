@@ -1,4 +1,4 @@
-import 'dotenv/config'; // load environment variables from .env into process.env
+// import 'dotenv/config'; // load environment variables from .env into process.env
 import express from 'express';
 import cors from 'cors';
 import { env, assertEnv } from './config/env';
@@ -29,7 +29,7 @@ app.use(
     origin: env.CORS_ORIGIN,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization']
   })
 );
 
@@ -46,16 +46,15 @@ app.get('/api/health', (_req, res) => {
 /* Auth route */
 app.use('/api/auth', authRouter);
 
-
 /* Polls routes (auth required) */
 app.use('/api/polls', requireAuth, pollsRouter);
-
 
 /* Handling 404 (Not Found) routes */
 app.use(notFoundHandler);
 
 /* Global error handling */
 app.use(errorHandler);
+
 
 /* Start the Express server and log connection info in the console */
 app.listen(env.PORT, () => {

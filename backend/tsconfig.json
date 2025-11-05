@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
 
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -16,6 +16,6 @@
     "outDir": "dist",
     "sourceMap": true
   },
-  "include": ["src"],
+  "include": ["src", "prisma/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -5,14 +5,14 @@ import { AppError } from '../middlewares/error.middleware';
 type CreatePollInput = {
   title: string;
   description?: string | null;
-  createdBy: string;
+  createdBy: string
 };
 
 // Type fo upsertVote input
 type UpsertVoteInput = {
   pollId: string;
   userId: string;
-  rating: number; // already validated in controller
+  rating: number // already validated in controller
 };
 
 
@@ -20,12 +20,13 @@ type UpsertVoteInput = {
 
 /* List polls with metrics */
 // Return all polls along with aggregated metrics (avg rating, vote count).
+// Add a boolean flag indicating whether the current user has voted each poll.
 // Round avg to 1 decimal.
-export async function listPollsWithMetrics() {
+export async function listPollsWithMetrics(userId: string) {
   // Fetch all polls (id/title/status)
   const polls = await prisma.poll.findMany({
     select: { id: true, title: true, status: true },
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: 'asc' }, // keep current ordering (asc). Change to 'desc' if you prefer latest first.
   });
 
   // Group votes by pollId to calculate avg and count in one db query
@@ -39,7 +40,21 @@ export async function listPollsWithMetrics() {
     stats.map(s => [s.pollId, { avg: s._avg.rating ?? 0, count: s._count._all }])
   );
 
-  // Merge polls with stats (on missing stats: avg=0, count=0)
+  // --- NEW: fetch user votes for all listed polls in a single query ---
+  // Reason: avoid N+1; check if current user has voted each poll
+  const pollIds = polls.map(p => p.id);
+
+  const userVotes = await prisma.vote.findMany({
+    where: {
+      userId,                  // current user
+      pollId: { in: pollIds } // only for visible polls
+    },
+    select: { pollId: true }  // we only need the poll id
+  });
+
+  const votedSet = new Set(userVotes.map(v => v.pollId));
+
+  // Merge polls with stats and userHasVoted (on missing stats: avg=0, count=0)
   const items = polls.map(p => {
     const s = statByPollId.get(p.id) ?? { avg: 0, count: 0 };
     return {
@@ -48,6 +63,8 @@ export async function listPollsWithMetrics() {
       status: p.status,
       avg: Number(s.avg.toFixed(1)),
       count: s.count,
+      // userHasVoted: true if the user has ever voted this poll (OPEN or CLOSED)
+      userHasVoted: votedSet.has(p.id)
     };
   });
 
@@ -74,18 +91,18 @@ export async function getPollByIdWithMetrics(pollId: string, userId: string) {
     prisma.vote.aggregate({
       where: { pollId },
       _avg: { rating: true },
-      _count: { _all: true },
+      _count: { _all: true }
     }),
     prisma.vote.groupBy({
       by: ['rating'],
       where: { pollId },
-      _count: { _all: true },
+      _count: { _all: true }
     }),
     // findFirst instead of findUnique (indipendent of composite key name and same performance)
     prisma.vote.findFirst({
       where: { pollId, userId },
-      select: { rating: true },
-    }),
+      select: { rating: true }
+    })
   ]);
 
   // Metrics
@@ -98,7 +115,7 @@ export async function getPollByIdWithMetrics(pollId: string, userId: string) {
   for (const row of grouped) distMap.set(row.rating, row._count._all);
   const distribution = [1, 2, 3, 4, 5].map((r) => ({
     rating: r,
-    count: distMap.get(r) ?? 0,
+    count: distMap.get(r) ?? 0
   }));
 
   return {
@@ -109,7 +126,7 @@ export async function getPollByIdWithMetrics(pollId: string, userId: string) {
     avg,
     count,
     distribution,
-    userVote: myVote?.rating ?? undefined, // omit if user never voted
+    userVote: myVote?.rating ?? undefined // omit if user never voted
   };
 }
 
@@ -126,7 +143,7 @@ export async function handleUpsertVote(input: UpsertVoteInput) {
   // ensure poll exists and is OPEN
   const poll = await prisma.poll.findUnique({
     where: { id: pollId },
-    select: { status: true },
+    select: { status: true }
   });
 
   if (!poll) {
@@ -144,7 +161,7 @@ export async function handleUpsertVote(input: UpsertVoteInput) {
     create: {
       userId,
       pollId,
-      rating,
+      rating
     },
     update: {
       rating,
@@ -152,14 +169,14 @@ export async function handleUpsertVote(input: UpsertVoteInput) {
     select: {
       rating: true,
       pollId: true,
-      userId: true,
-    },
+      userId: true
+    }
   });
 
   return {
     pollId: vote.pollId,
     userId: vote.userId,
-    rating: vote.rating,
+    rating: vote.rating
   };
 }
 
@@ -182,14 +199,14 @@ export async function handleCreatePoll(input: CreatePollInput) {
       title: true,
       description: true,
       status: true,
-      createdAt: true,
-    },
+      createdAt: true
+    }
   });
 
   // initialize distribution for the new poll
   const zeroDistribution = [1, 2, 3, 4, 5].map((r) => ({
     rating: r,
-    count: 0,
+    count: 0
   }));
 
   // shape the response compliant with API Contract
@@ -202,8 +219,8 @@ export async function handleCreatePoll(input: CreatePollInput) {
     stats: {
       count: 0,
       avg: 0,
-      distribution: zeroDistribution,
-    },
+      distribution: zeroDistribution
+    }
   };
 }
 

@@ -22,7 +22,7 @@ async function main() {
     hash('Admin!123'),
     hash('User1!123'),
     hash('User2!123'),
-    hash('User3!123'),
+    hash('User3!123')
   ]);
 
   const admin = await prisma.user.upsert({
@@ -32,7 +32,7 @@ async function main() {
       email: 'admin@polls.local',
       passwordHash: adminPwd,
       role: 'admin'
-    },
+    }
   });
 
   const user1 = await prisma.user.upsert({
@@ -42,7 +42,7 @@ async function main() {
       email: 'user1@polls.local',
       passwordHash: u1Pwd,
       role: 'user'
-    },
+    }
   });
 
   const user2 = await prisma.user.upsert({
@@ -52,7 +52,7 @@ async function main() {
       email: 'user2@polls.local',
       passwordHash: u2Pwd,
       role: 'user'
-    },
+    }
   });
 
   const user3 = await prisma.user.upsert({
@@ -62,7 +62,7 @@ async function main() {
       email: 'user3@polls.local',
       passwordHash: u3Pwd,
       role: 'user'
-    },
+    }
   });
 
 
@@ -78,8 +78,8 @@ async function main() {
       title: 'Lettura',
       description: 'Quanto spesso leggi libri durante l\'anno?',
       status: 'OPEN',
-      createdBy: admin.id,
-    },
+      createdBy: admin.id
+    }
   });
 
   const pollMusic = await prisma.poll.create({
@@ -87,8 +87,8 @@ async function main() {
       title: 'Musica',
       description: 'Ascolti spesso musica durante il giorno?',
       status: 'OPEN',
-      createdBy: admin.id,
-    },
+      createdBy: admin.id
+    }
   });
 
   const pollCinema = await prisma.poll.create({
@@ -96,8 +96,8 @@ async function main() {
       title: 'Cinema',
       description: null, // test nullable option
       // no status to test default option (OPEN)
-      createdBy: admin.id,
-    },
+      createdBy: admin.id
+    }
   });
 
 
@@ -108,9 +108,9 @@ async function main() {
     data: [
       { pollId: pollReading.id, userId: user1.id, rating: 5 },
       { pollId: pollReading.id, userId: user2.id, rating: 4 },
-      { pollId: pollReading.id, userId: user3.id, rating: 4 },
+      { pollId: pollReading.id, userId: user3.id, rating: 4 }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 
   // Music: 3 votes
@@ -118,24 +118,24 @@ async function main() {
     data: [
       { pollId: pollMusic.id, userId: user1.id, rating: 3 },
       { pollId: pollMusic.id, userId: user2.id, rating: 4 },
-      { pollId: pollMusic.id, userId: user3.id, rating: 4 },
+      { pollId: pollMusic.id, userId: user3.id, rating: 4 }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 
   // Cinema: 2 votes
   await prisma.vote.createMany({
     data: [
       { pollId: pollCinema.id, userId: user1.id, rating: 5 },
-      { pollId: pollCinema.id, userId: user2.id, rating: 3 },
+      { pollId: pollCinema.id, userId: user2.id, rating: 3 }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 
   // Close Music poll to test 403 on voting
   await prisma.poll.update({
     where: { id: pollMusic.id },
-    data: { status: 'CLOSED' },
+    data: { status: 'CLOSED' }
   });
 
   // Optional: show quick aggregates (avg/count/dist) in console
@@ -144,9 +144,9 @@ async function main() {
       title: true,
       status: true,
       _count: { select: { votes: true } },
-      votes: { select: { rating: true } },
+      votes: { select: { rating: true } }
     },
-    orderBy: { createdAt: 'asc' }, // enhanced by the index on createdAt
+    orderBy: { createdAt: 'asc' } // enhanced by the index on createdAt
   });
 
   for (const p of aggregates) {

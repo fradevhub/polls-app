@@ -22,10 +22,11 @@
     "prisma:migrate": "pnpm --dir backend exec dotenv -e .env -- prisma migrate dev --schema=prisma/schema.prisma",
     "prisma:deploy": "pnpm --dir backend exec dotenv -e .env -- prisma migrate deploy --schema=prisma/schema.prisma",
     "prisma:reset": "pnpm --dir backend exec dotenv -e .env -- prisma migrate reset --force --schema=prisma/schema.prisma",
-    "prisma:studio": "pnpm --dir backend exec dotenv -e .env -- prisma studio --schema=prisma/schema.prisma",
     "prisma:seed": "pnpm --dir backend exec dotenv -e .env -- prisma db seed",
+    "prisma:studio": "pnpm --dir backend exec dotenv -e .env -- prisma studio --schema=prisma/schema.prisma",
 
     "be:dev": "pnpm --dir backend exec dotenv -e .env -- tsx src/server.ts",
-    "fe:dev": "pnpm --dir frontend exec vite"
+    "fe:dev": "pnpm --dir frontend exec vite",
+    "fe:lint": "pnpm --dir frontend exec eslint src --fix"
   }
 }

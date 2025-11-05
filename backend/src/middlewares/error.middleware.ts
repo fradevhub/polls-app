@@ -43,8 +43,8 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
       error: {
         code: err.code,
         message: err.message,
-        details: err.details ?? null, // optional debugging info
-      },
+        details: err.details ?? null // optional debugging info
+      }
     });
   }
 

@@ -24,15 +24,21 @@ function getCurrentUserRole(req: Request): 'user' | 'admin' | undefined {
 }
 
 /* Body validation for POST /polls (ZOD) */
+// - title: required, trimmed, 1–80 chars
+// - description: optional, trimmed, "" → null, max 500 chars
 const CreatePollSchema = z.object({
   title: z
     .string()
-    .min(1, 'Title is required')
-    .max(200, 'Title must be at most 200 characters'),
+    .trim() 
+    .min(1, { message: 'Title is required' })
+    .max(80, { message: 'Title must be at most 80 characters' }),
+
   description: z
     .string()
-    .max(1000, 'Description must be at most 1000 characters')
-    .optional(),  // optional
+    .trim()
+    .max(500, { message: 'Description must be at most 500 characters' })
+    .optional()
+    .transform((s) => (s && s.length ? s : null)) // "" or undefined -> null
 });
 
 /* Body validation for POST /polls/:id/vote (ZOD) */
@@ -42,7 +48,7 @@ const voteBodySchema = z.object({
     .int()
     .min(1, { message: 'Rating must be an integer between 1 and 5' })
     .max(5, { message: 'Rating must be an integer between 1 and 5' })
-    .refine((val) => !isNaN(val), { message: 'Rating must be a number' }),
+    .refine((val) => !isNaN(val), { message: 'Rating must be a number' })
 });
 
 
@@ -52,7 +58,8 @@ const voteBodySchema = z.object({
 // Return { items: [...] } in compliance with API contract.
 export async function getPolls(req: Request, res: Response, next: NextFunction) {
   try {
-    const data = await listPollsWithMetrics();
+    const userId = getCurrentUserId(req);
+    const data = await listPollsWithMetrics(userId);
     return res.json(data);
   } catch (err) {
     return next(err); // global error handler translate to 500
@@ -126,7 +133,10 @@ export async function createPoll(req: Request, res: Response, next: NextFunction
 
     // Return created resource (201)
     // Return the new poll shape with stats initialized in compliance with API contract 
-    return res.status(201).json(created);
+    return res
+      .status(201)
+      .location(`/api/polls/${created.id}`) // include location header pointing to the new poll
+      .json(created);
   } catch (err: any) {
     // Map Zod validation errors to 400 with code VALIDATION_ERROR
     if (err instanceof z.ZodError) {

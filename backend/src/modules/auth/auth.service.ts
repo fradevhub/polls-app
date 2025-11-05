@@ -7,7 +7,7 @@ export async function loginWithEmailPassword(email: string, password: string) {
   // find user by email
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { id: true, email: true, passwordHash: true, role: true },
+    select: { id: true, email: true, passwordHash: true, role: true }
   });
 
   if (!user) {
@@ -28,7 +28,7 @@ export async function loginWithEmailPassword(email: string, password: string) {
     ok: true as const,
     data: {
       token,
-      user: { id: user.id, email: user.email, role: user.role },
-    },
+      user: { id: user.id, email: user.email, role: user.role }
+    }
   };
 }
