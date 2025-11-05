@@ -1,0 +1,29 @@
+services:
+  # --- Backend API (Node + Express + Prisma) ---
+  - type: web
+    name: polls-api
+    env: node
+    nodeVersion: 20
+    plan: free
+    rootDir: backend
+    autoDeploy: true
+    healthCheckPath: /api/health
+    buildCommand: |
+      pnpm install --frozen-lockfile
+      pnpm exec prisma generate --schema=prisma/schema.prisma
+      pnpm exec prisma migrate deploy --schema=prisma/schema.prisma
+      pnpm run build
+    startCommand: pnpm start
+    envVarGroups:
+      - POLLS_APP
+
+  # --- Frontend (React + Vite, static site) ---
+  - type: static
+    name: polls-frontend
+    rootDir: frontend
+    buildCommand: |
+      pnpm install --frozen-lockfile
+      pnpm run build
+    staticPublishPath: dist
+    envVarGroups:
+      - POLLS_APP
