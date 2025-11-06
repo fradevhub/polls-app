@@ -5,7 +5,7 @@ import { loginWithEmailPassword } from './auth.service';
 const loginSchema = z.object({
   // @ts-ignore false positive: not related to Request.email
   email: z.string().email(),
-  password: z.string().min(8)
+  password: z.string().min(1)
 });
 
 /* Login controller */
