@@ -1,10 +1,12 @@
+/* React */
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { FormEvent } from "react";
+
+/* App components */
 import { apiFetch } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-
-import type { FormEvent } from "react";
 import type { ApiError } from "../api/client";
 
 // Type for login response
@@ -71,11 +73,11 @@ export default function LoginPage() {
   // Render
   return (
     <div className="min-h-screen grid place-items-center bg-gray-50">
-      <div className="flex flex-col items-center w-full">
-        {/* Logo centrato sopra al box del form */}
+      <div className="flex flex-col items-center w-full px-4 sm:px-0">
+        {/* Logo centered above the form box */}
         <img src="/polls_app_logo.png" alt="PollsApp logo" className="mb-10 h-16 w-auto" />
 
-        {/* Box bianco con il form di login */}
+        {/* White box for login form */}
         <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow">
           <h1 className="mb-6 text-2xl font-semibold">Accedi</h1>
 
@@ -88,7 +90,7 @@ export default function LoginPage() {
             </p>
           )}
 
-          {/* Form di login */}
+          {/* Login from */}
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="mb-1 block text-sm font-medium">
