@@ -1,4 +1,7 @@
+/* React */
 import { Navigate, Outlet } from "react-router-dom";
+
+/* App components */
 import { useAuth } from "./AuthContext";
 
 /* ProtectedRoute component */

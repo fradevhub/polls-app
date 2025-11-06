@@ -1,3 +1,4 @@
+/* React */
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
@@ -42,7 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Update localStorage on login
   const login = (data: { token: string; user: User }) => {
   // derive username from email before saving
-  const username = data.user.email.split("@")[0];
+  const rawName = data.user.email.split("@")[0];
+  const username = rawName.charAt(0).toUpperCase() + rawName.slice(1);
   const userWithUsername = { ...data.user, username };
 
   setToken(data.token);
