@@ -8,7 +8,13 @@
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
     "prisma": "prisma",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "test:run": "vitest --run",
+    "pretest:e2e": "dotenv -e .env.test -- prisma migrate deploy",
+    "test:e2e": "dotenv -e .env.test -- vitest --run",
+    "test:e2e:watch": "dotenv -e .env.test -- vitest",
+    "prisma:test:reset": "dotenv -e .env.test -- prisma migrate reset --force --skip-seed",
+    "db:test:studio": "dotenv -e .env.test -- prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -20,11 +26,14 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.10.0",
+    "@types/supertest": "^6.0.3",
     "dotenv-cli": "^11.0.0",
     "morgan": "^1.10.1",
     "prisma": "^6.18.0",
+    "supertest": "^7.1.4",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
@@ -32,7 +41,7 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "zod": "^4.1.12",
-    "rimraf": "^5.0.5"
+    "rimraf": "^5.0.5",
+    "zod": "^4.1.12"
   }
 }

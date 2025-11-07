@@ -10,12 +10,12 @@
 
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["node"],
+    "types": ["node", "vitest/globals"],
 
     "resolveJsonModule": true,
     "outDir": "dist",
     "sourceMap": true
   },
-  "include": ["src", "prisma/**/*.ts"],
+  "include": ["src", "prisma/**/*.ts", "tests/**/*.ts"], 
   "exclude": ["node_modules", "dist"]
 }
