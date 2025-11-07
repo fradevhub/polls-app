@@ -1,6 +1,10 @@
-// import 'dotenv/config'; // load environment variables from .env into process.env
+/* Express */
 import express from 'express';
+
+/* CORS */
 import cors from 'cors';
+
+/* App modules */
 import { env, assertEnv } from './config/env';
 import { requireAuth } from './middlewares/auth.guard';
 import { notFoundHandler, errorHandler } from './middlewares/error.middleware';

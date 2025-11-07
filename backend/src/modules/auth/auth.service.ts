@@ -1,4 +1,7 @@
+/* Bcrypt */
 import bcrypt from 'bcryptjs';
+
+/* App modules */
 import { prisma } from '../../db';
 import { signAccessToken } from '../../utils/jwt';
 

@@ -1,7 +1,8 @@
-/* PrismaClient singleton */
-// Keep a single instance (no multiple instances with hot reloads in dev)
+/* Prisma */
 import { PrismaClient } from '@prisma/client';
 
+/* PrismaClient singleton */
+// Keep a single instance (no multiple instances with hot reloads in dev)
 const globalForPrisma = global as unknown as { prisma?: PrismaClient };
 
 export const prisma =

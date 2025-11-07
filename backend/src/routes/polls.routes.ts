@@ -1,6 +1,8 @@
+/* Express */
 import { Router } from 'express';
-import { getPolls, getPollDetail, upsertVote } from '../controllers/polls.controller';
-import { createPoll, closePoll } from '../controllers/polls.controller';
+
+/* App modules */
+import { getPolls, getPollDetail, upsertVote, createPoll, closePoll } from '../controllers/polls.controller';
 
 const router = Router();
 

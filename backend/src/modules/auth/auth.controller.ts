@@ -1,7 +1,11 @@
+/* Express and Zod */
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
+
+/* App modules */
 import { loginWithEmailPassword } from './auth.service';
 
+/* Zod schema validation */
 const loginSchema = z.object({
   // @ts-ignore false positive: not related to Request.email
   email: z.string().email(),

@@ -1,5 +1,8 @@
-import jwt from 'jsonwebtoken';
+/* Express and JWT */
 import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+
+/* App modules */
 import { env } from '../config/env';
 
 /* Extend Express.Request to include "user" property */

@@ -5,7 +5,10 @@
 // - Creates: 3 polls (2 OPEN, 1 CLOSED)
 // - Creates: votes consistent with API contract (unique user+poll, rating 1-5)
 
-import { PrismaClient, Prisma } from '@prisma/client';
+/* Prisma */
+import { PrismaClient } from '@prisma/client';
+
+/* Bcrypt */
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();

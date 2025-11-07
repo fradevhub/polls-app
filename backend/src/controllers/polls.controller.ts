@@ -1,7 +1,9 @@
+/* Exrpess and Zod */
 import { Request, Response, NextFunction } from 'express'
 import { z } from 'zod';
-import { listPollsWithMetrics, getPollByIdWithMetrics, handleUpsertVote } from '../services/polls.service';
-import { handleCreatePoll, handleClosePoll } from '../services/polls.service';
+
+/* App modules */
+import { listPollsWithMetrics, getPollByIdWithMetrics, handleUpsertVote, handleCreatePoll, handleClosePoll } from '../services/polls.service';
 import { AppError } from '../middlewares/error.middleware';
 
 /* Get current user id */

@@ -1,4 +1,7 @@
+/* JWT */
 import jwt from 'jsonwebtoken';
+
+/* App modules */
 import { env } from '../config/env';
 
 type Role = 'user' | 'admin';

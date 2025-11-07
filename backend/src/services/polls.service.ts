@@ -1,3 +1,4 @@
+/* App modules */
 import { prisma } from '../db';
 import { AppError } from '../middlewares/error.middleware';
 
