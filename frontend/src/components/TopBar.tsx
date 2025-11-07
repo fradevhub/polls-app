@@ -17,6 +17,9 @@ export default function TopBar() {
   const { user, logout } = useAuth();
   const isAdmin = user?.role === "admin";
 
+  // Fallback: use username if available, else part before "@"
+  const username = user?.username ?? (user?.email?.split("@")[0] ?? "");
+
   // Mobile menu state (open/close)
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -158,7 +161,7 @@ export default function TopBar() {
 
           {/* User + logout grouped for mobile */}
           <li className="mt-2 flex items-center justify-between">
-            <span className="text-gray-700">{user?.username}</span>
+            <span className="text-gray-700">{username}</span>
             <button
               type="button"
               onClick={() => closeMenu(logout)}

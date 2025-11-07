@@ -16,7 +16,7 @@ type LoginResponse = {
     id: string;
     email: string;
     role: "user" | "admin";
-    username: string
+    username?: string
   }
 };
 
