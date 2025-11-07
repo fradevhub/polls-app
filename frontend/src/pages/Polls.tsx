@@ -6,6 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 /* App components */
 import { apiFetch } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 import TopBar from "../components/TopBar";
 
 /* Type for poll list response (aligned with API contract) */
@@ -100,12 +101,16 @@ function PollCardSkeleton() {
 function PollCard({ poll }: { poll: PollListItem }) {
   const navigate = useNavigate();
   const isOpen = poll.status === "OPEN";
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
-  // Decide CTA label based on rules
+  // Decide CTA label based on user role and poll status
   const ctaLabel = isOpen
-    ? poll.userHasVoted
-      ? "Modifica voto"
-      : "Vota"
+    ? isAdmin
+      ? "Gestisci"
+      : poll.userHasVoted
+        ? "Modifica voto"
+        : "Vota"
     : "Vedi risultati";
 
   // Route behavior

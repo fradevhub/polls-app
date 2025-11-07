@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 /* App components */
 import { apiFetch } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 import TopBar from "../components/TopBar";
 
 /* Type for poll list response (aligned with API contract) */
@@ -78,14 +79,19 @@ export default function PollDetailPage() {
     enabled: !!id,
   });
 
-  // Local selection reflects the vote saved on the server (if it exists)
+  // local selection reflects the vote saved on the server (if it exists)
   const [selection, setSelection] = useState<1 | 2 | 3 | 4 | 5 | null>(null);
+  
+  // modal open/close state
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     if (data?.userVote) setSelection(data.userVote);
     else setSelection(null);
   }, [data?.userVote]);
 
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
   const isOpen = data?.status === "OPEN";
   const total = data?.count ?? 0;
 
@@ -107,11 +113,34 @@ export default function PollDetailPage() {
     },
   });
 
-  /* Submit handler */
+  /* Vote submit handler */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isOpen || !selection) return;
     voteMutation.mutate(selection);
+  };
+
+  /* Close poll mutation, allowed only for admin when the pool is OPEN */
+  const closePoll = useMutation({
+    mutationFn: async () =>
+      apiFetch(`/polls/${id}/close`, { method: "POST" }),
+    onSuccess: () => {
+      toast.success("Sondaggio chiuso!");
+      queryClient.invalidateQueries({ queryKey: ["poll", id] });
+      queryClient.invalidateQueries({ queryKey: ["polls"] });
+    },
+    onError: () => {
+      toast.error("Impossibile chiudere il sondaggio.");
+    },
+  });
+
+  /* Close poll handler */
+  const handleCloseClick = () => {
+    if (closePoll.isPending) return;
+    const ok = window.confirm(
+      `Chiudere il sondaggio “${data?.title ?? ""}”? L’operazione è definitiva.`
+    );
+    if (ok) closePoll.mutate();
   };
 
   // Render
@@ -282,6 +311,30 @@ export default function PollDetailPage() {
             ) : (
               <p className="mt-6 text-sm text-neutral-600">Sondaggio chiuso.</p>
             )}
+
+            {/* Close button (if pool is OPEN and user is admin) */}
+            {isAdmin && isOpen && (
+              <> {/* React fragment */}
+                <div className="mt-6">
+                  <button
+                    onClick={() => setConfirmOpen(true)}
+                    disabled={closePoll.isPending}
+                    className="rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-red-700 hover:bg-red-100 active:bg-red-200 disabled:opacity-50"
+                  >
+                    {closePoll.isPending ? "Chiusura in corso..." : "Chiudi sondaggio"}
+                  </button>
+                </div>
+
+                <ConfirmModal
+                  open={confirmOpen}
+                  onCancel={() => setConfirmOpen(false)}
+                  onConfirm={() => {
+                    setConfirmOpen(false);
+                    closePoll.mutate();
+                  }}
+                />
+              </> 
+            )}
           </section>
         )}
 
@@ -296,5 +349,48 @@ export default function PollDetailPage() {
         </div>
       </main>
     </>
+  );
+}
+
+
+/* Local component: simple modal confirm */
+// Defined outside PollDetailPage to avoid re-creation on each render.
+function ConfirmModal({
+  open,
+  onConfirm,
+  onCancel,
+  }: {
+    open: boolean;
+    onConfirm: () => void;
+    onCancel: () => void;
+  }) {
+  
+  if (!open) return null;
+
+  // Render
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+      <div className="bg-white rounded-xl p-6 shadow-xl w-80">
+        <h2 className="text-lg font-semibold mb-3">Conferma chiusura</h2>
+        <p className="text-sm text-neutral-700 mb-5">
+          Chiudere definitivamente questo sondaggio? <br /><br />
+          L’operazione non potrà essere annullata.
+        </p>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onCancel}
+            className="rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-100"
+          >
+            Annulla
+          </button>
+          <button
+            onClick={onConfirm}
+            className="rounded-lg bg-red-600 text-white px-3 py-1.5 text-sm hover:bg-red-700"
+          >
+            Chiudi sondaggio
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
