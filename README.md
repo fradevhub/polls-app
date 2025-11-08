@@ -1,7 +1,6 @@
 # Polls App
-
+### Creazione e gestione sondaggi di valutazione (single rating) con voto medio
 Applicazione full-stack MVP/test
-Creazione e gestione sondaggi di valutazione (single rating) con voto medio.
 
 ---
 
@@ -49,7 +48,7 @@ pnpm dev
 ---
 
 ## Ambiente di sviluppo / test
-Usare il template [.env.example](./backend/.env.example).
+Usare il template [.env.example](./backend/.env.example)
 
 ---
 
@@ -123,15 +122,18 @@ curl http://localhost:8080/api/health
 ```
 Risposta attesa
 ```json
-{ "status": "ok" }
+{
+     "ok": true,
+     "env": "development"
+}
 ```
 ---
 
-## Test automatici (Supertest + Vitest)
+## Test automatici (Supertest + Vitest)
 Si includono test di conformità tra backend e contratto API.
 Verifiche effettuate: autenticazione, accessi protetti e gestione dei sondaggi.
 
-### Stack
+### Stack
 - Vitest          - test runner e assertions
 - Supertest       – richieste HTTP verso l’app Express
 - Docker Compose  – database PostgreSQL isolato per i test (porta 5433)

@@ -1,9 +1,9 @@
 # Polls App (MVP/test) – API Contract (v1)
-**Stato:** Draft stabile
-**Versione:** 1.0.2
-**Data:** 03-11-2025 
-**Autore:** fradevhub
-**Scopo:** definire il contratto FE-BE per app di sondaggi con rating singolo (1–5).
+- **Stato:** Draft stabile
+- **Versione:** 1.0.2
+- **Data:** 03-11-2025 
+- **Autore:** fradevhub
+- **Scopo:** definire il contratto FE-BE per app di sondaggi con rating singolo (1–5).
 
 ---
 
@@ -16,7 +16,7 @@
 - **HTTPS:** obbligatorio in ambienti pubblici
 - **Date:** tutte le date sono in formato ISO 8601 (UTC).
 
-- **Health Check:** `GET /health` → `{ "status": "ok" }`
+- **Health Check:** `GET /health` → `{ "ok":true, "env":"production" }`
 
 ## Variabili d'ambiente (backend)
 - `PORT=8080`
@@ -86,7 +86,7 @@ Tutte le risposte di errore seguono questo shape:
 
 ### Autenticazione
 
-POST /auth/login
+**POST /auth/login**
 
 Descrizione: autentica un utente seed, restituisce JWT (no refresh token in per MVP/test).
 
@@ -137,7 +137,7 @@ JWT claims minimi
 
 ### Polls – User Endpoints (autenticazione richiesta)
 
-GET /polls
+**GET /polls**
 
 Descrizione: elenco dei sondaggi + metriche, senza paginazione (MVP/test).
 Query: nessuna.
@@ -179,7 +179,7 @@ Query: nessuna.
 - `userHasVoted` indica se l’utente corrente ha già espresso un voto per il sondaggio.
 
 
-GET /polls/:id
+**GET /polls/:id**
 
 Descrizione: dettaglio sondaggio + eventuale voto espresso dall'utente + metriche.
 
@@ -231,7 +231,7 @@ Descrizione: dettaglio sondaggio + eventuale voto espresso dall'utente + metrich
 ```
 
 
-POST /polls/:id/vote
+**POST /polls/:id/vote**
 
 Descrizione: crea/aggiorna (upsert) il voto dell’utente; permessa solo se OPEN.
 
@@ -287,7 +287,7 @@ Body
 
 ### Polls – Admin Endpoints (autenticazione richiesta)
 
-POST /polls
+**POST /polls**
 
 Descrizione: crea un nuovo sondaggio, di default status=OPEN.
 
@@ -338,7 +338,7 @@ Header: `Location: /api/polls/{id}`
 ```
 
 
-POST /polls/:id/close
+**POST /polls/:id/close**
 
 Descrizione: chiude un sondaggio (operazione irreversibile in MVP/test).
 
@@ -405,6 +405,6 @@ Test da effettuare:
 - Futuri extra (fuori MVP/test): paginazione, ricerca, refresh token, audit log, i18n errori.
 
 ### Changelog
-2025-11-03 - v1.0.0 - Prima versione stabile del contratto per MVP/test.
-2025-11-03 - v1.0.1 - Aggiunti dettagli su nuovo campo description, errori, formato date e range di rating.
-2025-11-04 - v1.0.2 - Aggiunte metriche di distribuzione.
+- 2025-11-03 - v1.0.0 - Prima versione stabile del contratto per MVP/test.
+- 2025-11-03 - v1.0.1 - Aggiunti dettagli su nuovo campo description, errori, formato date e range di rating.
+- 2025-11-04 - v1.0.2 - Aggiunte metriche di distribuzione.

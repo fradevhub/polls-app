@@ -11,7 +11,7 @@ Autore: fradevhub
 
 ### Metodo
 L’applicazione utilizza autenticazione basata su token JWT (JSON Web Token).  
-Non è previsto alcun refresh token o registrazione utente per MVP/test.
+Non sono previsti refresh token e registrazione utente per MVP/test.
 
 - **Login:**
 `POST /api/auth/login`
@@ -101,4 +101,4 @@ Rotte protette future (es. /admin/*) potranno richiedere anche claim aggiuntivi 
 Logging accessi e tentativi falliti potranno essere centralizzati.
 
 Questo file definisce le regole ufficiali di sicurezza per questo MVP/test.
-Ogni modifica a JWT o CORS deve essere documentata qui e riflessa nel file [API_CONTRACT.md](./API_CONTRACT.md).
+Ogni modifica a JWT o CORS deve essere documentata qui e riflessa nel file [Contratto API](./docs/API_CONTRACT.md)
