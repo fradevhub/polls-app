@@ -1,5 +1,5 @@
 /* React */
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { FormEvent } from "react";
@@ -25,6 +25,7 @@ type LoginResponse = {
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
+  const queryClient = useQueryClient(); 
 
   // If already logged in, bounce to /polls
   useEffect(() => {
@@ -46,9 +47,9 @@ export default function LoginPage() {
         body: JSON.stringify(body)
       }),
     onSuccess: (data) => {
-      // save auth state and go to polls
       login(data);
-      navigate("/polls")
+      navigate("/polls", { replace: true });
+      queryClient.invalidateQueries({ queryKey: ["polls"] }); // clear polls cache on login
     },
   });
 
