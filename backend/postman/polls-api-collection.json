@@ -1,0 +1,482 @@
+{
+	"info": {
+		"_postman_id": "0a3b2e6c-759b-4134-a5fb-314bd8f25e3a",
+		"name": "Polls API",
+		"description": "Collection for Polls MVP backend (Express + Prisma + JWT)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49869634"
+	},
+	"item": [
+		{
+			"name": "GET /health",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Sport\",\n  \"description\": \"Pratichi spesso sport durante la settimana?\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /auth/login (user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"  pm.environment.set(\"token\", jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add Authorization header if token is present",
+							"if (pm.environment.get('token')) {",
+							"  pm.request.headers.upsert({",
+							"    key: 'Authorization',",
+							"    value: `Bearer ${pm.environment.get('token')}`",
+							"  });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"user1@polls.local\",\n  \"password\": \"User1!123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /auth/login (admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"  pm.environment.set(\"token\", jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add Authorization header if token is present",
+							"if (pm.environment.get('token')) {",
+							"  pm.request.headers.upsert({",
+							"    key: 'Authorization',",
+							"    value: `Bearer ${pm.environment.get('token')}`",
+							"  });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"admin@polls.local\",\n  \"password\": \"Admin!123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /polls",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add Authorization header if token is present",
+							"if (pm.environment.get('token')) {",
+							"  pm.request.headers.upsert({",
+							"    key: 'Authorization',",
+							"    value: `Bearer ${pm.environment.get('token')}`",
+							"  });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"  pm.environment.set(\"token\", jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/polls",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"polls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /polls/:id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add Authorization header if token is present",
+							"if (pm.environment.get('token')) {",
+							"  pm.request.headers.upsert({",
+							"    key: 'Authorization',",
+							"    value: `Bearer ${pm.environment.get('token')}`",
+							"  });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"  pm.environment.set(\"token\", jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/polls/cmhmgqhnf00059k4jur8j8hsq",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"polls",
+						"cmhmgqhnf00059k4jur8j8hsq"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /polls/:id/vote",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add Authorization header if token is present",
+							"if (pm.environment.get('token')) {",
+							"  pm.request.headers.upsert({",
+							"    key: 'Authorization',",
+							"    value: `Bearer ${pm.environment.get('token')}`",
+							"  });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"  pm.environment.set(\"token\", jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"rating\": 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/polls/cmhmgqhnl00099k4jbds2bsml/vote",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"polls",
+						"cmhmgqhnl00099k4jbds2bsml",
+						"vote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /polls",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add Authorization header if token is present",
+							"if (pm.environment.get('token')) {",
+							"  pm.request.headers.upsert({",
+							"    key: 'Authorization',",
+							"    value: `Bearer ${pm.environment.get('token')}`",
+							"  });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"  pm.environment.set(\"token\", jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Sport\",\n  \"description\": \"Pratichi spesso sport durante la settimana?\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/polls",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"polls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /polls/:id/close",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add Authorization header if token is present",
+							"if (pm.environment.get('token')) {",
+							"  pm.request.headers.upsert({",
+							"    key: 'Authorization',",
+							"    value: `Bearer ${pm.environment.get('token')}`",
+							"  });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"  pm.environment.set(\"token\", jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/polls/cmhp8qxqg00019k2i8h0j73mt/close",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"polls",
+						"cmhp8qxqg00019k2i8h0j73mt",
+						"close"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

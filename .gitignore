@@ -17,10 +17,13 @@ coverage/
 .vite/
 .pnpm-store/
 
-# Env & secrets
+# Env
 .env
 .env.*
 !.env.example
+
+# Postgres (dev)
+.data/
 
 # Logs
 logs/
@@ -40,6 +43,3 @@ yarn-error.log*
 
 # OTHERS
 MATERIALE/
-OLD/
-TEST/
-public/assets/

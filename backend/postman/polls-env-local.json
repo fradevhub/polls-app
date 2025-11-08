@@ -1,0 +1,21 @@
+{
+	"id": "adb7beb2-0888-451f-b43f-ded6522f91a2",
+	"name": "Polls App (local)",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/api",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-11-10T01:34:11.038Z",
+	"_postman_exported_using": "Postman/11.70.6"
+}
