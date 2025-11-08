@@ -134,15 +134,6 @@ export default function PollDetailPage() {
     },
   });
 
-  /* Close poll handler */
-  const handleCloseClick = () => {
-    if (closePoll.isPending) return;
-    const ok = window.confirm(
-      `Chiudere il sondaggio “${data?.title ?? ""}”? L’operazione è definitiva.`
-    );
-    if (ok) closePoll.mutate();
-  };
-
   // Render
   return (
     <> {/* React fragment (groups elements without adding extra HTML) */}
