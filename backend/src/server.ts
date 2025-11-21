@@ -28,7 +28,6 @@ app.set('trust proxy', 1);
 /* Do not expose Express signature */
 app.disable('x-powered-by');
 
-
 /* Parse incoming JSON request bodies */
 // Needed for POST, PUT, PATCH requests with JSON payloads.
 app.use(express.json());
@@ -58,8 +57,10 @@ const corsMw = cors({
 
 app.use(corsMw);
 
+
 /* Optional HTTP request logger */
 // app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+
 
 /* Health-check route to verify the API is running */
 // Example access: GET /api/health → { ok: true, env: "development" }

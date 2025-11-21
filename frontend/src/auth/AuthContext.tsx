@@ -1,5 +1,5 @@
 /* React */
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 
 // Type for user
@@ -27,18 +27,13 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 // Provide global authentication state (user + token).
 // Restore data from localStorage, updates on login/logout and shares auth methods via context.
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  // Initialize auth state from localStorage at first render to avoid redirect loops on deep links
+  const [user, setUser] = useState<User | null>(() => {
+    const cachedUser = localStorage.getItem("user");
+    return cachedUser ? (JSON.parse(cachedUser) as User) : null;
+  });
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
 
-  // Bootstrap from localStorage
-  useEffect(() => {
-    const t = localStorage.getItem("token");
-    const u = localStorage.getItem("user");
-    if (t && u) {
-      setToken(t);
-      setUser(JSON.parse(u) as User);
-    }
-  }, []);
 
   // Update localStorage on login
   const login = (data: { token: string; user: User }) => {
@@ -53,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   localStorage.setItem("token", data.token);
   localStorage.setItem("user", JSON.stringify(userWithUsername));
 };
+
 
   // Remove localStorage on logout
   const logout = () => {
@@ -76,6 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 /* useAuth hook */
 // Custom hook to access the authentication context.
 // Throws an error if used outside <AuthProvider>.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within <AuthProvider>");

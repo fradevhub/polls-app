@@ -7,10 +7,12 @@ export type ApiError = {
 // Base URL (fallback a "/api" se la env manca)
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "/api") as string;
 
+
 // get JWT token from localStorage
 function getToken(): string | null {
   return localStorage.getItem("token");
 }
+
 
 /* HTTP client for app API with JWT support */
 export async function apiFetch<T>(
@@ -34,7 +36,7 @@ export async function apiFetch<T>(
   const res = await fetch(url, { ...options, headers });
 
   // try to parse JSON, otherwise fallback to text
-  let payload: any = null;
+  let payload: unknown = null;
   let raw = "";
   try {
     raw = await res.text();
@@ -45,15 +47,14 @@ export async function apiFetch<T>(
 
   if (!res.ok) {
     // extract message from our standard shape: { error: { code, message } }
+    const payloadObj =
+      typeof payload === "object" && payload ? (payload as Record<string, unknown>) : null;
+
     const messageFromApi =
-      (typeof payload === "object" &&
-        payload &&
-        "error" in payload &&
-        (payload as any).error?.message) ||
-      (typeof payload === "object" &&
-        payload &&
-        "message" in payload &&
-        (payload as any).message) ||
+      (payloadObj?.error &&
+        typeof (payloadObj.error as { message?: unknown }).message === "string" &&
+        (payloadObj.error as { message?: string }).message) ||
+      (payloadObj?.message && typeof payloadObj.message === "string" ? payloadObj.message : undefined) ||
       (typeof payload === "string" ? payload : undefined);
 
     const err: ApiError = {

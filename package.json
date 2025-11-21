@@ -1,8 +1,10 @@
 {
   "name": "polls-app",
   "private": true,
-  "packageManager": "pnpm@10.20.0",
-  "engines": { "node": "20.x" },
+  "packageManager": "pnpm@10.23.0+sha512.21c4e5698002ade97e4efe8b8b4a89a8de3c85a37919f957e7a0f30f38fbc5bbdd05980ffe29179b2fb6e6e691242e098d945d1601772cad0fef5fb6411e2a4b",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "db:start": "docker compose up -d db",
     "db:stop": "docker compose stop db",
@@ -16,7 +18,6 @@
     "db:test:psql": "docker exec -it polls-db-test psql -U polls -d polls_test",
     "db:test:logs": "docker compose logs -f db_test",
     "db:status": "docker compose ps",
-
     "prisma:gen": "pnpm --dir backend exec dotenv -e .env -- prisma generate --schema=prisma/schema.prisma",
     "prisma:migrate:init": "pnpm --dir backend exec dotenv -e .env -- prisma migrate dev --name init --schema=prisma/schema.prisma",
     "prisma:migrate": "pnpm --dir backend exec dotenv -e .env -- prisma migrate dev --schema=prisma/schema.prisma",
@@ -26,7 +27,6 @@
     "prisma:studio": "pnpm --dir backend exec dotenv -e .env -- prisma studio --schema=prisma/schema.prisma",
     "prisma:test:deploy": "pnpm --dir backend exec dotenv -e .env.test -- prisma migrate deploy --schema=prisma/schema.prisma",
     "prisma:test:seed": "pnpm --dir backend exec dotenv -e .env.test -- prisma db seed --schema=prisma/schema.prisma",
-
     "be:dev": "pnpm --dir backend exec dotenv -e .env -- tsx src/server.ts",
     "fe:dev": "pnpm --dir frontend exec vite",
     "fe:lint": "pnpm --dir frontend exec eslint src --fix"

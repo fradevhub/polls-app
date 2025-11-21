@@ -63,10 +63,12 @@ function LineSkeleton({ w = "100%" }: { w?: string }) {
   return <div className="h-4 rounded bg-neutral-200/70" style={{ width: w }} />;
 }
 
+
 /* Data fetching */
 async function fetchPollDetail(id: string): Promise<PollDetail> {
   return apiFetch(`/polls/${id}`) as Promise<PollDetail>;
 }
+
 
 /* PollDetail page component  */
 export default function PollDetailPage() {
@@ -81,7 +83,7 @@ export default function PollDetailPage() {
 
   // local selection reflects the vote saved on the server (if it exists)
   const [selection, setSelection] = useState<1 | 2 | 3 | 4 | 5 | null>(null);
-  
+
   // modal open/close state
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -324,7 +326,7 @@ export default function PollDetailPage() {
                     closePoll.mutate();
                   }}
                 />
-              </> 
+              </>
             )}
           </section>
         )}
@@ -350,12 +352,12 @@ function ConfirmModal({
   open,
   onConfirm,
   onCancel,
-  }: {
-    open: boolean;
-    onConfirm: () => void;
-    onCancel: () => void;
-  }) {
-  
+}: {
+  open: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+
   if (!open) return null;
 
   // Render

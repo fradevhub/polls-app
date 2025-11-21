@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
 /* Light theme by default */
-:root { color-scheme: light; }
+:root {
+  color-scheme: light;
+}
 
 /* Buttons show pointer cursor */
 @layer base {
@@ -11,5 +13,12 @@
 }
 
 /* Global styles */
-html, body, #root { height: 100%; }
-body { @apply bg-white text-slate-900; }
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-white text-slate-900;
+}

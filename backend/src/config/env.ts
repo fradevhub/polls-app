@@ -15,6 +15,7 @@ export const env = {
   JWT_SECRET: process.env.JWT_SECRET ?? '',
 };
 
+
 /* Critical environment variables checker */
 // If any required variable is missing, throw an error and stop the app.
 // Useful to catch misconfigurations early during startup.

@@ -31,9 +31,9 @@ const formatRating = (avg: number, count: number) =>
   count === 0
     ? "—"
     : new Intl.NumberFormat("it-IT", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      }).format(avg);
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    }).format(avg);
 
 
 // Tiny inline SVGs (no extra icon packages)
@@ -141,7 +141,7 @@ function PollCard({ poll }: { poll: PollListItem }) {
       <div className="mb-8 flex items-center gap-3 text-neutral-800">
         <StarIcon />
         <span className="text-base font-medium">{formatRating(poll.avg, poll.count)}</span>
-        
+
         {/* Spacer for alignment */}
         <span className="inline-block w-1" aria-hidden="true"></span>
 

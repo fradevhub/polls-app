@@ -14,13 +14,15 @@
     "test:e2e": "dotenv -e .env.test -- vitest --run",
     "test:e2e:watch": "dotenv -e .env.test -- vitest",
     "prisma:test:reset": "dotenv -e .env.test -- prisma migrate reset --force --skip-seed",
-    "db:test:studio": "dotenv -e .env.test -- prisma studio"
+    "db:test:studio": "dotenv -e .env.test -- prisma studio",
+    "lint": "eslint src --ext .ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.20.0",
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/jsonwebtoken": "^9.0.10",
@@ -28,11 +30,14 @@
     "@types/node": "^24.10.0",
     "@types/supertest": "^6.0.3",
     "dotenv-cli": "^11.0.0",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
     "morgan": "^1.10.1",
     "prisma": "^6.18.0",
     "supertest": "^7.1.4",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.47.0",
     "vitest": "^4.0.8"
   },
   "dependencies": {

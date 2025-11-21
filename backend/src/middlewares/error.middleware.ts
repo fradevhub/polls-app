@@ -28,11 +28,13 @@ export class AppError extends Error {
   }
 }
 
+
 /* Handling 404 (Not Found) routes */
 // Create new AppError if no previous route matched
 export function notFoundHandler(_req: Request, _res: Response, next: NextFunction) {
   next(new AppError(404, 'NOT_FOUND', 'Resource not found'));
 }
+
 
 /* Global error handling */
 // Catch all errors by routes or other middleware

@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../../db';
 import { signAccessToken } from '../../utils/jwt';
 
+
 /* Login with email and password */
 export async function loginWithEmailPassword(email: string, password: string) {
   // find user by email

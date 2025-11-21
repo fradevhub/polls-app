@@ -6,32 +6,13 @@ import { z } from 'zod';
 import { listPollsWithMetrics, getPollByIdWithMetrics, handleUpsertVote, handleCreatePoll, handleClosePoll } from '../services/polls.service';
 import { AppError } from '../middlewares/error.middleware';
 
-/* Get current user id */
-// Helper to read current user id from auth context
-function getCurrentUserId(req: Request): string {
-  if (!req.user?.id) {
-    // This should never happen unless requireAuth was skipped or misconfigured
-    throw new Error('Missing authenticated user in request context');
-  }
-  return req.user.id;
-}
-
-/* Get current user role */
-// Helper to read current user role from auth context
-function getCurrentUserRole(req: Request): 'user' | 'admin' | undefined {
-  return (
-    (req as any)?.user?.role ??
-    (req as any)?.auth?.role
-  );
-}
-
 /* Body validation for POST /polls (ZOD) */
 // - title: required, trimmed, 1–80 chars
 // - description: optional, trimmed, "" → null, max 500 chars
 const CreatePollSchema = z.object({
   title: z
     .string()
-    .trim() 
+    .trim()
     .min(1, { message: 'Title is required' })
     .max(80, { message: 'Title must be at most 80 characters' }),
 
@@ -52,6 +33,27 @@ const voteBodySchema = z.object({
     .max(5, { message: 'Rating must be an integer between 1 and 5' })
     .refine((val) => !isNaN(val), { message: 'Rating must be a number' })
 });
+
+
+/* Get current user id */
+// Helper to read current user id from auth context
+function getCurrentUserId(req: Request): string {
+  if (!req.user?.id) {
+    // This should never happen unless requireAuth was skipped or misconfigured
+    throw new Error('Missing authenticated user in request context');
+  }
+  return req.user.id;
+}
+
+
+/* Get current user role */
+// Helper to read current user role from auth context
+function getCurrentUserRole(req: Request): 'user' | 'admin' | undefined {
+  return (
+    (req as any)?.user?.role ??
+    (req as any)?.auth?.role
+  );
+}
 
 
 /* POLLS - USER ENDPOINT CONTROLLERS */
@@ -151,6 +153,7 @@ export async function createPoll(req: Request, res: Response, next: NextFunction
     return next(err);
   }
 }
+
 
 // Close poll (auth required)
 // Controller: POST /polls/:id/close (admin only; works only if poll is OPEN).

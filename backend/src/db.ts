@@ -5,6 +5,8 @@ import { PrismaClient } from '@prisma/client';
 // Keep a single instance (no multiple instances with hot reloads in dev)
 const globalForPrisma = global as unknown as { prisma?: PrismaClient };
 
+
+/* Create PrismaClient */
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({

@@ -4,6 +4,7 @@ import { Navigate, Outlet } from "react-router-dom";
 /* App components */
 import { useAuth } from "./AuthContext";
 
+
 /* ProtectedRoute component */
 // Protect routes by checking auth state.
 // If the user is not authenticated, redirect to /login.

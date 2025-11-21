@@ -9,6 +9,8 @@ const prisma = new PrismaClient();
 // Set E2E_SEED=false on .env.test to skip this minimal seed
 const SHOULD_SEED = (process.env.E2E_SEED ?? 'true') !== 'false';
 
+
+/* Actions to be executed before all tests */
 beforeAll(async () => {
   if (!SHOULD_SEED) return;
 
@@ -24,4 +26,6 @@ beforeAll(async () => {
   });
 });
 
+
+/* Actions to be executed after all tests */
 afterAll(async () => { await prisma.$disconnect(); });

@@ -25,7 +25,7 @@ type LoginResponse = {
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
-  const queryClient = useQueryClient(); 
+  const queryClient = useQueryClient();
 
   // If already logged in, bounce to /polls
   useEffect(() => {
@@ -68,8 +68,8 @@ export default function LoginPage() {
     mutation.error?.status === 401
       ? "Email o password non valide."
       : mutation.error
-      ? "Problema di rete o server. Riprova."
-      : "";
+        ? "Problema di rete o server. Riprova."
+        : "";
 
   // Render
   return (

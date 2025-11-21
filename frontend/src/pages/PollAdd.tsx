@@ -9,6 +9,7 @@ import TopBar from "../components/TopBar";
 import { apiFetch } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 
+
 /*
 Types aligned with API contract:
 - POST /polls accepts { title: string; description?: string }
@@ -20,12 +21,7 @@ export default function PollAddPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  // Guard: only admins can access this page
-  if (user?.role !== "admin") {
-    // simple safety: non-admin users are bounced to the list
-    return <Navigate to="/polls" replace />;
-  }
+  const isAdmin = user?.role === "admin";
 
   // Local form state
   const [title, setTitle] = useState("");
@@ -50,7 +46,7 @@ export default function PollAddPage() {
       queryClient.invalidateQueries({ queryKey: ["polls"] });
       navigate("/polls");
     },
-    onError: (err: any) => {
+    onError: (err: ApiError) => {
       // Friendly error mapping based on API error shape
       const code = err?.error?.code;
       const msg =
@@ -62,6 +58,12 @@ export default function PollAddPage() {
       toast.error(msg);
     },
   });
+
+  // Guard: only admins can access this page (hooks initialized above)
+  if (!isAdmin) {
+    // simple safety: non-admin users are bounced to the list
+    return <Navigate to="/polls" replace />;
+  }
 
   // client-side validation (title required)
   const canSubmit = title.trim().length > 0 && !createMutation.isPending;

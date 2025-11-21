@@ -7,6 +7,7 @@ import { app } from '../src/test-app';
 const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'admin@polls.local';
 const ADMIN_PASS = process.env.TEST_ADMIN_PASSWORD || 'Admin!123';
 
+
 /* Test POST /auth/login */
 describe('Auth /auth/login', () => {
   it('401 on invalid credentials', async () => {

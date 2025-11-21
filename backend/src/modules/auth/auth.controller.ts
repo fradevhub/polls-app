@@ -12,6 +12,7 @@ const loginSchema = z.object({
   password: z.string().min(1)
 });
 
+
 /* Login controller */
 export async function loginController(req: Request, res: Response, _next: NextFunction) {
   // validate body
