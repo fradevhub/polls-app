@@ -32,7 +32,7 @@ export default function TopBar() {
   return (
     <nav
       aria-label="Primary"
-      className="my-7 border-y border-gray-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 py-2"
+      className="my-7 border-y border-gray-200 bg-white/80 backdrop-blur supports-backdrop-filter:bg-white/60 py-2"
     >
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         {/* Brand / Logo */}
