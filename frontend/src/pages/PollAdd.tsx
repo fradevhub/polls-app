@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 /* App components */
 import TopBar from "../components/TopBar";
-import { apiFetch } from "../api/client";
+import { apiFetch, type ApiError } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 
 
@@ -48,7 +48,7 @@ export default function PollAddPage() {
     },
     onError: (err: ApiError) => {
       // Friendly error mapping based on API error shape
-      const code = err?.error?.code;
+      const code = err.code;
       const msg =
         code === "FORBIDDEN"
           ? "Solo gli amministratori possono creare sondaggi."

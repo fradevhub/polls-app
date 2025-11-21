@@ -1,7 +1,7 @@
-// Type for API error
 export type ApiError = {
   status: number;
-  message: string
+  message: string;
+  code?: string;
 };
 
 // Base URL (fallback a "/api" se la env manca)
@@ -50,16 +50,24 @@ export async function apiFetch<T>(
     const payloadObj =
       typeof payload === "object" && payload ? (payload as Record<string, unknown>) : null;
 
-    const messageFromApi =
-      (payloadObj?.error &&
-        typeof (payloadObj.error as { message?: unknown }).message === "string" &&
-        (payloadObj.error as { message?: string }).message) ||
-      (payloadObj?.message && typeof payloadObj.message === "string" ? payloadObj.message : undefined) ||
-      (typeof payload === "string" ? payload : undefined);
+    const messageFromApi: string | undefined =
+      typeof payload === "string"
+        ? payload
+        : payloadObj?.error && typeof (payloadObj.error as { message?: unknown }).message === "string"
+          ? (payloadObj.error as { message?: string }).message
+          : payloadObj?.message && typeof payloadObj.message === "string"
+            ? payloadObj.message
+            : undefined;
+
+    const codeFromApi: string | undefined =
+      payloadObj?.error && typeof (payloadObj.error as { code?: unknown }).code === "string"
+        ? (payloadObj.error as { code?: string }).code
+        : undefined;
 
     const err: ApiError = {
       status: res.status,
-      message: messageFromApi || "Request failed"
+      message: messageFromApi || "Request failed",
+      code: codeFromApi,
     };
 
     throw err;
